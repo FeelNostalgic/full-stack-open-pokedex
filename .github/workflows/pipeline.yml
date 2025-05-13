@@ -14,6 +14,8 @@ on:
 jobs:
   simple_deployment_pipeline:
     runs-on: ubuntu-22.04
+    env:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -33,7 +35,7 @@ jobs:
         if: ${{ failure() && steps.build.conclusion == 'failure' }}
         uses: Ilshidur/action-discord@master
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook: ${{ env.DISCORD_WEBHOOK }}
           message: |
             ❌ Build failed for ${{ github.repository }} on branch ${{ github.ref }}.
             Commit: ${{ github.sha }}
@@ -43,7 +45,7 @@ jobs:
         if: ${{ success() && env.CONDITION == 'true' }}
         uses: Ilshidur/action-discord@master
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          webhook: ${{ env.DISCORD_WEBHOOK }}
           message: |
             ✅ New version deployed for ${{ github.repository }}!
             Commit: ${{ github.sha }}
