@@ -33,7 +33,7 @@ jobs:
         if: ${{ failure() && steps.build.conclusion == 'failure' }}
         uses: Ilshidur/action-discord@master
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
           message: |
             ❌ Build failed for ${{ github.repository }} on branch ${{ github.ref }}.
             Commit: ${{ github.sha }}
@@ -43,7 +43,7 @@ jobs:
         if: ${{ success() && env.CONDITION == 'true' }}
         uses: Ilshidur/action-discord@master
         with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
           message: |
             ✅ New version deployed for ${{ github.repository }}!
             Commit: ${{ github.sha }}
