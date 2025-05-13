@@ -27,7 +27,28 @@ jobs:
       - name: test
         run: npm test
       - name: build
+        id: build
         run: npm run build
+      - name: Notify Discord on build failure
+        if: ${{ failure() && steps.build.conclusion == 'failure' }}
+        uses: Ilshidur/action-discord@master
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          message: |
+            ❌ Build failed for ${{ github.repository }} on branch ${{ github.ref }}.
+            Commit: ${{ github.sha }}
+            Author: ${{ github.actor }}
+            See details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      - name: Notify Discord on successful deploy
+        if: ${{ success() && env.CONDITION == 'true' }}
+        uses: Ilshidur/action-discord@master
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          message: |
+            ✅ New version deployed for ${{ github.repository }}!
+            Commit: ${{ github.sha }}
+            Author: ${{ github.actor }}
+            See details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       - name: deploy fly.io
         if: ${{ env.CONDITION == 'true' }}
         run: flyctl deploy --remote-only
