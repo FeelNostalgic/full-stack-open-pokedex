@@ -1,0 +1,20 @@
+name: URL Health Check
+
+on:
+  schedule:
+    # Runs every 5 minutes
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check deployed app health
+        uses: Jtalk/url-health-check-action@v4
+        with:
+          url: https://full-stack-open-pokedex-white-haze-9523.fly.dev/
+          max-attempts: 1
+          retry-delay: 10s
+          retry-all: true
+          follow-redirect: true
